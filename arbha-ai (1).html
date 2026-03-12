@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arbha AI – SAP Intelligence by Arbhasoft</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07090f;
+    --surface: #0e1220;
+    --card: #131826;
+    --border: #1e2740;
+    --accent: #2563eb;
+    --accent2: #06b6d4;
+    --text: #e8eaf0;
+    --muted: #6b7899;
+    --user-bubble: #1a2a4a;
+    --ai-bubble: #111827;
+    --glow: rgba(37,99,235,0.18);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .logo-group { display: flex; align-items: center; gap: 14px; }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 15px; color: #fff;
+    box-shadow: 0 0 18px var(--glow);
+  }
+  .logo-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 17px;
+    background: linear-gradient(90deg, #fff, var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+  .logo-sub { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
+  .header-badge {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--accent2);
+    background: rgba(6,182,212,0.08);
+    border: 1px solid rgba(6,182,212,0.2);
+    padding: 5px 12px; border-radius: 20px; font-weight: 500;
+  }
+  .pulse-dot {
+    width: 7px; height: 7px; background: #22c55e;
+    border-radius: 50%; animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.5; transform:scale(0.8); }
+  }
+  .chat-container {
+    flex: 1; overflow-y: auto; padding: 28px 20px;
+    display: flex; flex-direction: column; gap: 20px;
+    scroll-behavior: smooth;
+  }
+  .chat-container::-webkit-scrollbar { width: 4px; }
+  .chat-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .welcome { text-align: center; padding: 30px 20px 20px; animation: fadeUp 0.6s ease; }
+  .welcome-orb {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; color: #fff;
+    margin: 0 auto 18px;
+    box-shadow: 0 0 40px var(--glow), 0 0 80px rgba(6,182,212,0.1);
+  }
+  .welcome h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; margin-bottom: 8px;
+    background: linear-gradient(90deg, #fff 40%, var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .welcome p { color: var(--muted); font-size: 13.5px; max-width: 420px; margin: 0 auto 24px; line-height: 1.6; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 600px; margin: 0 auto; }
+  .chip {
+    background: var(--card); border: 1px solid var(--border); color: var(--text);
+    padding: 7px 14px; border-radius: 20px; font-size: 12px;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent2); background: rgba(37,99,235,0.08); transform: translateY(-1px); }
+  .message { display: flex; gap: 12px; max-width: 780px; width: 100%; margin: 0 auto; animation: fadeUp 0.3s ease; }
+  .message.user { flex-direction: row-reverse; }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0; font-family: 'Syne', sans-serif;
+  }
+  .avatar.ai { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: 0 0 12px var(--glow); }
+  .avatar.user { background: var(--user-bubble); color: var(--accent2); border: 1px solid var(--border); }
+  .bubble { padding: 13px 17px; border-radius: 14px; font-size: 14px; line-height: 1.65; max-width: calc(100% - 50px); }
+  .bubble.ai { background: var(--ai-bubble); border: 1px solid var(--border); border-top-left-radius: 4px; }
+  .bubble.user { background: var(--user-bubble); border: 1px solid rgba(37,99,235,0.3); border-top-right-radius: 4px; }
+  .bubble.ai strong { color: var(--accent2); font-weight: 600; }
+  .thinking { display: flex; align-items: center; gap: 5px; padding: 14px 17px; }
+  .thinking span { width: 7px; height: 7px; background: var(--muted); border-radius: 50%; animation: bounce 1.2s infinite; }
+  .thinking span:nth-child(2) { animation-delay: 0.2s; }
+  .thinking span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%,80%,100% { transform:translateY(0); opacity:0.4; }
+    40% { transform:translateY(-6px); opacity:1; }
+  }
+  .input-area { padding: 16px 20px 20px; background: var(--surface); border-top: 1px solid var(--border); flex-shrink: 0; }
+  .input-box {
+    max-width: 780px; margin: 0 auto;
+    display: flex; gap: 10px; align-items: flex-end;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 10px 14px; transition: border-color 0.2s;
+  }
+  .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+  textarea {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+    resize: none; max-height: 120px; min-height: 22px; line-height: 1.5;
+  }
+  textarea::placeholder { color: var(--muted); }
+  .send-btn {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; border-radius: 9px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s;
+    box-shadow: 0 2px 8px var(--glow);
+  }
+  .send-btn:hover { transform: scale(1.06); }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .send-btn svg { width: 16px; height: 16px; fill: #fff; }
+  .input-hint { text-align: center; font-size: 11px; color: var(--muted); margin-top: 8px; max-width: 780px; margin-left: auto; margin-right: auto; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-group">
+    <div class="logo-icon">A</div>
+    <div>
+      <div class="logo-name">Arbha AI</div>
+      <div class="logo-sub">SAP Intelligence · Arbhasoft</div>
+    </div>
+  </div>
+  <div class="header-badge">
+    <div class="pulse-dot"></div>
+    SAP Expert Online
+  </div>
+</header>
+
+<div class="chat-container" id="chatContainer">
+  <div class="welcome" id="welcome">
+    <div class="welcome-orb">A</div>
+    <h1>Hello! I'm Arbha AI</h1>
+    <p>Your dedicated SAP expert powered by Arbhasoft. Ask me anything about SAP — all modules, implementation, BTP, integration, and more.</p>
+    <div class="chips">
+      <div class="chip" onclick="sendChip(this)">What is SAP S/4HANA?</div>
+      <div class="chip" onclick="sendChip(this)">Explain SAP FICO module</div>
+      <div class="chip" onclick="sendChip(this)">SAP MM vs SD difference</div>
+      <div class="chip" onclick="sendChip(this)">What is SAP BTP?</div>
+      <div class="chip" onclick="sendChip(this)">SAP implementation steps</div>
+      <div class="chip" onclick="sendChip(this)">SAP HR/HCM overview</div>
+      <div class="chip" onclick="sendChip(this)">What is ABAP programming?</div>
+      <div class="chip" onclick="sendChip(this)">SAP PP module explained</div>
+    </div>
+  </div>
+</div>
+
+<div class="input-area">
+  <div class="input-box">
+    <textarea id="userInput" placeholder="Ask anything about SAP..." rows="1"
+      onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+  <div class="input-hint">Powered by Arbhasoft · SAP Consulting Experts</div>
+</div>
+
+<script>
+const SYSTEM_PROMPT = `You are Arbha AI, the official SAP intelligence assistant created by Arbhasoft — a world-class SAP ERP Consulting and Services company.
+
+About Arbhasoft:
+- End-to-end SAP consulting, implementation, rollouts, support, maintenance, and upgrades
+- Singular focus on SAP Services with deep Mid-Market expertise
+- Partners from first consultation through ongoing support
+- Expert in SAP BTP and cloud-native solutions
+- Known for technical depth, innovation, and customer-first approach
+- Mission: bridge the gap between business expectations and SAP implementation realities
+
+You are an expert in ALL SAP modules and topics:
+- SAP S/4HANA (on-premise and cloud), SAP ECC
+- FICO: FI (Financial Accounting), CO (Controlling), Asset Accounting, Treasury
+- Logistics: MM (Materials Management), SD (Sales & Distribution), WM/EWM, PP (Production Planning), QM, PM
+- HR/HCM, SuccessFactors, Payroll
+- SCM, Ariba, SRM, IBP
+- SAP BTP (Business Technology Platform), Integration Suite, API Management
+- ABAP, Fiori, UI5, RAP, CAP
+- SAP Basis, Security, Roles & Authorizations
+- SAP Activate & ASAP methodologies
+- BW/4HANA, SAP Analytics Cloud, Crystal Reports
+- Industry solutions: IS-Retail, IS-Banking, IS-Utilities, IS-Oil & Gas
+
+Response rules:
+- Be clear, expert, and genuinely helpful
+- Use **bold** for SAP terms and module names
+- Structure complex answers with clear sections
+- Mention Arbhasoft's expertise when relevant
+- Answer in the same language as the user (Telugu, Hindi, or English)
+- Always give a complete, actionable answer`;
+
+let isThinking = false;
+let history = [];
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function sendChip(el) {
+  document.getElementById('userInput').value = el.textContent;
+  sendMessage();
+}
+
+function scrollBottom() {
+  const c = document.getElementById('chatContainer');
+  c.scrollTop = c.scrollHeight;
+}
+
+function addMsg(role, html) {
+  const w = document.getElementById('welcome');
+  if (w) w.remove();
+  const c = document.getElementById('chatContainer');
+  const d = document.createElement('div');
+  d.className = 'message ' + role;
+  const av = document.createElement('div');
+  av.className = 'avatar ' + role;
+  av.textContent = role === 'ai' ? 'A' : 'U';
+  const b = document.createElement('div');
+  b.className = 'bubble ' + role;
+  b.innerHTML = html;
+  d.appendChild(av); d.appendChild(b);
+  c.appendChild(d); scrollBottom();
+}
+
+function showThinking() {
+  const w = document.getElementById('welcome');
+  if (w) w.remove();
+  const c = document.getElementById('chatContainer');
+  const d = document.createElement('div');
+  d.className = 'message ai'; d.id = 'thinkMsg';
+  const av = document.createElement('div');
+  av.className = 'avatar ai'; av.textContent = 'A';
+  const b = document.createElement('div');
+  b.className = 'bubble ai thinking';
+  b.innerHTML = '<span></span><span></span><span></span>';
+  d.appendChild(av); d.appendChild(b);
+  c.appendChild(d); scrollBottom();
+}
+
+function removeThinking() {
+  const el = document.getElementById('thinkMsg');
+  if (el) el.remove();
+}
+
+function fmt(t) {
+  return t
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^### (.*?)$/gm, '<br><span style="color:var(--accent2);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">$1</span><br>')
+    .replace(/^## (.*?)$/gm, '<br><strong style="font-size:15px;">$1</strong><br>')
+    .replace(/^- (.*?)$/gm, '&nbsp;&nbsp;• $1')
+    .replace(/\n/g, '<br>');
+}
+
+async function sendMessage() {
+  if (isThinking) return;
+  const inp = document.getElementById('userInput');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = ''; inp.style.height = 'auto';
+  isThinking = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  addMsg('user', text);
+  history.push({ role: 'user', content: text });
+  showThinking();
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: history
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.map(b => b.text || '').join('') || 'Sorry, could not get a response.';
+    history.push({ role: 'assistant', content: reply });
+    removeThinking();
+    addMsg('ai', fmt(reply));
+  } catch (e) {
+    removeThinking();
+    addMsg('ai', '<strong>Connection error.</strong> Please try again.');
+  }
+
+  isThinking = false;
+  document.getElementById('sendBtn').disabled = false;
+  inp.focus();
+}
+</script>
+</body>
+</html>
